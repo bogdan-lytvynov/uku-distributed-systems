@@ -1,5 +1,7 @@
 go 1.21.1
 
-use ./rpc
+use ./replica
+
 use ./leader
+
 use ./proto

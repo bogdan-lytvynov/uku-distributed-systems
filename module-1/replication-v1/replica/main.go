@@ -3,11 +3,16 @@ package main
 import (
   "os"
   "fmt"
+  "net"
   "net/http"
   "net/rpc"
   "encoding/json"
   "github.com/bogdan-lytvynov/uku-distributed-systems/module-1/replication-v1/proto"
+
 )
+const HTTP_PORT = 3000
+const RPC_PORT = 3001
+
 var logs = []string{}
 
 func getLogs(w http.ResponseWriter, r *http.Request) {
@@ -16,7 +21,7 @@ func getLogs(w http.ResponseWriter, r *http.Request) {
     w.Header().Set("Content-Type", "application/json")
     m, err := json.Marshal(logs)
     if err != nil {
-      fmt.Println("Marshal error: %w", err)
+      fmt.Println("Marshal error", err)
     }
     w.Write(m)
 
@@ -25,35 +30,31 @@ func getLogs(w http.ResponseWriter, r *http.Request) {
   }
 }
 
-type Replica struct{}
+type ReplicaRPC struct{}
 
-func (r Replica) Replicate(args *proto.ReplicateArgs, reply *proto.ReplicateReply) {
+func (r ReplicaRPC) Replicate(args *proto.ReplicateArgs, reply *proto.ReplicateReply) {
+  logs = append(logs, args.Message)
+  reply.Ack = true
 }
 
 func main() {
-  //start http server
-  port := os.Getenv("PORT")
+  //start Http server
   http.HandleFunc("/logs", getLogs)
 
-  host := fmt.Sprintf(":%s", port)
-  fmt.Printf("Starting server: %s \n", host)
-  err := http.ListenAndServe(host, nil)
-
+  fmt.Println("Start http server")
+  err := http.ListenAndServe(fmt.Sprintf(":%s", HTTP_PORT), nil)
 
   if err != nil {
-    fmt.Println("Error happened on server start %w", err)
+    fmt.Println("Error happened on server start", err)
   }
 
-  //start RPC
-
-	rpc.Register(c)
+  //start RPC server
+  r := ReplicaRPC{}
+	rpc.Register(r)
 	rpc.HandleHTTP()
-	//l, e := net.Listen("tcp", ":1234")
-	sockname := coordinatorSock()
-	os.Remove(sockname)
-	l, e := net.Listen("unix", sockname)
+	l, e := net.Listen("tcp", fmt.Sprintf(":%s", RPC_PORT))
 	if e != nil {
-		log.Fatal("listen error:", e)
+		fmt.Println("listen error:", e)
 	}
 	go http.Serve(l, nil)
 }

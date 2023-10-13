@@ -1,9 +1,9 @@
 package proto
 
 type ReplicateArgs struct {
-  message string
+  Message string
 }
 
 type ReplicateReply struct {
-  ack bool
+  Ack bool
 }

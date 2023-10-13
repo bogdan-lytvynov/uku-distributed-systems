@@ -3,10 +3,11 @@ package main
 import (
   "os"
   "fmt"
+  "net/rpc"
   "net/http"
   "encoding/json"
   "strings"
-  //"github.com/bogdan-lytvynov/uku-distributed-systems/module-1/replication-v1/proto"
+  "github.com/bogdan-lytvynov/uku-distributed-systems/module-1/replication-v1/proto"
 )
 
 var logs = []string{}
@@ -52,7 +53,15 @@ func postMessage(w http.ResponseWriter, r *http.Request) {
 func replicateMessage(m string) error {
   replicas := strings.Split(os.Getenv("REPLICAS"), ",")
 
-  fmt.Println(replicas)
+  client ,err := rpc.DialHTTP("tcp", replicas[0]) 
+  if err != nil {
+    fmt.Println("dialing:", err)
+  }
+  args := &proto.ReplicateArgs{}
+  reply := &proto.ReplicateReply{}
+  replicateCall := client.Go("ReplicaRPC.Replicate", args, reply, nil)
+  <- replicateCall.Done
+  fmt.Println("Ack", reply.Ack)
   return nil
 }
 
@@ -68,5 +77,4 @@ func main() {
   if err != nil {
     fmt.Println("Error happened on server start %w", err)
   }
-
 }
