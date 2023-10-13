@@ -1,7 +1,6 @@
 package main
 
 import (
-  "os"
   "fmt"
   "net"
   "net/http"
@@ -30,31 +29,40 @@ func getLogs(w http.ResponseWriter, r *http.Request) {
   }
 }
 
-type ReplicaRPC struct{}
-
-func (r ReplicaRPC) Replicate(args *proto.ReplicateArgs, reply *proto.ReplicateReply) {
-  logs = append(logs, args.Message)
-  reply.Ack = true
+type ReplicaRPC struct{
 }
 
-func main() {
-  //start Http server
+func (r *ReplicaRPC) Replicate(args *proto.ReplicateArgs, reply *proto.ReplicateReply) error {
+  logs = append(logs, args.Message)
+  reply.Ack = true
+  return nil
+}
+
+func startHttpServer() {
   http.HandleFunc("/logs", getLogs)
 
   fmt.Println("Start http server")
-  err := http.ListenAndServe(fmt.Sprintf(":%s", HTTP_PORT), nil)
+  err := http.ListenAndServe(fmt.Sprintf(":%d", HTTP_PORT), nil)
 
   if err != nil {
     fmt.Println("Error happened on server start", err)
   }
+}
 
+func startRpcServer() {
   //start RPC server
-  r := ReplicaRPC{}
-	rpc.Register(r)
-	rpc.HandleHTTP()
-	l, e := net.Listen("tcp", fmt.Sprintf(":%s", RPC_PORT))
-	if e != nil {
-		fmt.Println("listen error:", e)
-	}
-	go http.Serve(l, nil)
+  r := new(ReplicaRPC)
+  rpc.Register(r)
+  rpc.HandleHTTP()
+  l, e := net.Listen("tcp", fmt.Sprintf(":%d", RPC_PORT))
+  if e != nil {
+    fmt.Println("listen error:", e)
+  }
+  fmt.Println("Start rpc server")
+  go http.Serve(l, nil)
+}
+
+func main() {
+  startRpcServer()
+  startHttpServer()
 }

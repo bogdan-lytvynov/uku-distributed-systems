@@ -8,6 +8,7 @@ import (
   "encoding/json"
   "strings"
   "github.com/bogdan-lytvynov/uku-distributed-systems/module-1/replication-v1/proto"
+  "sync"
 )
 const HTTP_PORT = 4000
 
@@ -44,25 +45,45 @@ func postMessage(w http.ResponseWriter, r *http.Request) {
       fmt.Fprintf(w, "Sorry, failed to decode request body")
       return
     }
-    replicateMessage(m.Message)
+    replicateOnAll(m.Message)
+    logs = append(logs, m.Message)
+    w.WriteHeader(http.StatusOK)
 
   default:
+    w.WriteHeader(http.StatusInternalServerError)
     fmt.Fprintf(w, "Sorry, only GET method is supported.")
   }
 }
 
-func replicateMessage(m string) error {
-  replicas := strings.Split(os.Getenv("REPLICAS"), ",")
-
-  client ,err := rpc.DialHTTP("tcp", replicas[0]) 
+func replicateOnOneReplica(m string, replicaAdress string, wg *sync.WaitGroup) error {
+  defer wg.Done()
+  client ,err := rpc.DialHTTP("tcp", replicaAdress) 
   if err != nil {
     fmt.Println("dialing:", err)
   }
-  args := &proto.ReplicateArgs{}
+  args := &proto.ReplicateArgs{
+    Message: m,
+  }
   reply := &proto.ReplicateReply{}
   replicateCall := client.Go("ReplicaRPC.Replicate", args, reply, nil)
   <- replicateCall.Done
-  fmt.Println("Ack", reply.Ack)
+
+  return nil
+}
+
+func replicateOnAll(m string) error {
+  fmt.Println("Replicate message:", m)
+  replicas := strings.Split(os.Getenv("REPLICAS"), ",")
+
+  var wg sync.WaitGroup
+  for _, r := range replicas {
+    wg.Add(1)
+    go replicateOnOneReplica(m, r, &wg)
+  }
+
+  wg.Wait()
+  fmt.Println("Finished replication of message", m)
+
   return nil
 }
 
