@@ -9,6 +9,7 @@ import (
   "strings"
   "github.com/bogdan-lytvynov/uku-distributed-systems/module-1/replication-v1/proto"
 )
+const HTTP_PORT = 4000
 
 var logs = []string{}
 
@@ -66,13 +67,10 @@ func replicateMessage(m string) error {
 }
 
 func main() {
-  port := os.Getenv("PORT")
   http.HandleFunc("/logs", getLogs)
   http.HandleFunc("/message", postMessage)
 
-  host := fmt.Sprintf(":%s", port)
-  fmt.Printf("Starting server: %s \n", host)
-  err := http.ListenAndServe(host, nil)
+  err := http.ListenAndServe(fmt.Sprintf(":%d", HTTP_PORT), nil)
 
   if err != nil {
     fmt.Println("Error happened on server start %w", err)
