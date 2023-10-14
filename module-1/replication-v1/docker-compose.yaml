@@ -1,0 +1,21 @@
+version: "3.8"
+
+services:
+  leader:
+    build: ./leader
+    environment:
+      - REPLICAS=replica_1:3001,replica_2:3001
+    ports:
+      - 4000:4000
+
+  replica_1:
+    build: ./replica
+    ports:
+      - 3000:3000
+      - 3001:3001
+
+  replica_2:
+    build: ./replica
+    ports:
+      - 3002:3000
+      - 3003:3001
