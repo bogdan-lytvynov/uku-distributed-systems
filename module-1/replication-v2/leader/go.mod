@@ -2,7 +2,11 @@ module github.com/bogdan-lytvynov/uku-distributed-systems/module-1/replication-v
 
 go 1.21.1
 
-require github.com/bogdan-lytvynov/uku-distributed-systems/module-1/replication-v1/proto v0.0.0-20231013093549-550d74896d7d
+require (
+	github.com/bogdan-lytvynov/uku-distributed-systems/module-1/replication-v1/proto v0.0.0-20231020125651-1a207e65e841
+	github.com/gin-gonic/gin v1.9.1
+	go.uber.org/zap v1.26.0
+)
 
 require (
 	github.com/bytedance/sonic v1.10.2 // indirect
@@ -10,7 +14,6 @@ require (
 	github.com/chenzhuoyu/iasm v0.9.0 // indirect
 	github.com/gabriel-vasile/mimetype v1.4.3 // indirect
 	github.com/gin-contrib/sse v0.1.0 // indirect
-	github.com/gin-gonic/gin v1.9.1 // indirect
 	github.com/go-playground/locales v0.14.1 // indirect
 	github.com/go-playground/universal-translator v0.18.1 // indirect
 	github.com/go-playground/validator/v10 v10.15.5 // indirect
@@ -25,7 +28,6 @@ require (
 	github.com/twitchyliquid64/golang-asm v0.15.1 // indirect
 	github.com/ugorji/go/codec v1.2.11 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
-	go.uber.org/zap v1.26.0 // indirect
 	golang.org/x/arch v0.5.0 // indirect
 	golang.org/x/crypto v0.14.0 // indirect
 	golang.org/x/net v0.17.0 // indirect
