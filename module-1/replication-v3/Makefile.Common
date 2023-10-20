@@ -1,0 +1,8 @@
+%PHONY: tidy
+tidy:
+	rm -rf go.sum
+	go mod tidy -compat=1.21
+
+%PHONY: test
+test:
+	go test ./...

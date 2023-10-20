@@ -1,0 +1,8 @@
+go 1.21.1
+
+use ./replica
+
+use ./leader
+
+use ./proto
+replace github.com/bogdan-lytvynov/uku-distributed-systems/module-1/replication-v1/proto v0.1.0 => ./proto
