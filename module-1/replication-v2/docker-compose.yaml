@@ -4,18 +4,32 @@ services:
   leader:
     build: ./leader
     environment:
-      - REPLICAS=replica_1:3001,replica_2:3001
+      - REPLICAS=replica_1:3001,replica_2:3001,replica_3:3001
+        # W is amount of nodes that should ACK message including leader
+      - W=2
+      - GIN_MODE=release
     ports:
       - 8080:8080
 
   replica_1:
     build: ./replica
+    environment:
+      - GIN_MODE=release
     ports:
-      - 3000:3000
-      - 3001:3001
+      - 3000:8080
 
   replica_2:
     build: ./replica
+    environment:
+      - GIN_MODE=release
     ports:
-      - 3002:3000
-      - 3003:3001
+      - 3001:8080
+
+  replica_3:
+    build: ./replica
+    environment:
+      - GIN_MODE=release
+        # introduce delay in order to test that this replica doesn't ACK immediately
+      - DELAY=20
+    ports:
+      - 3002:8080

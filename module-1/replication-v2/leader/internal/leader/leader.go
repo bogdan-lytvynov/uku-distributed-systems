@@ -1,23 +1,27 @@
 package leader
 
 import (
-  "net/rpc"
   "sync"
+  "net/rpc"
   "go.uber.org/zap"
   "github.com/bogdan-lytvynov/uku-distributed-systems/module-1/replication-v1/proto"
 )
 
 type Leader struct {
+  order int
+  mx sync.Mutext
   logs []string
   logger *zap.Logger
   replicas []string
+  minAcks int
 }
 
-func NewLeader(replicas []string, logger *zap.Logger) Leader {
+func NewLeader(replicas []string, minAcks int, logger *zap.Logger) Leader {
   return Leader{
     logger: logger,
     logs: []string{},
     replicas: replicas,
+    minAcks: minAcks,
   }
 }
 
@@ -26,38 +30,48 @@ func (l *Leader) GetLogs() []string {
 }
 
 func (l *Leader) AddMessage(m string) error {
-  l.replicateToAll(m)
-  l.logs = append(l.logs, m)
-  l.logger.Info("Add message to the log", zap.String("message", m))
+  mx.Lock()
+  l.order++
+  mx.Unlock()
+  l.replicateToAll(order, m)
+  l.logs[order] = m 
   return nil
 }
 
-func (l *Leader) replicateToOneReplica(m string, replicaAdress string, wg *sync.WaitGroup) error {
-  defer wg.Done()
+func (l *Leader) replicateToOneReplica(args ReplicateArgs, replicaAdress string, c chan bool) {
   client ,err := rpc.DialHTTP("tcp", replicaAdress) 
   if err != nil {
-    //fmt.Println("dialing:", err)
-  }
-  args := &proto.ReplicateArgs{
-    Message: m,
+    logger.Fatal("Failed to rpc.DialHTTP", zap.Error(err))
+    return
   }
   reply := &proto.ReplicateReply{}
-  replicateCall := client.Go("ReplicaRPC.Replicate", args, reply, nil)
+  replicateCall := client.Go("Replica.Replicate", args, reply, nil)
   <- replicateCall.Done
+
+  c <- reply.Ack
 
   return nil
 }
 
-func (l *Leader) replicateToAll(m string) error {
-  l.logger.Info("Start replication", zap.String("message", m))
-  var wg sync.WaitGroup
+func (l *Leader) replicateToAll(order int, m string) error {
+  l.logger.Info("Start replication from leader to all the replicas", zap.String("message", m))
+  c := make(chan bool, len(l.replicas))
+
   for _, r := range l.replicas {
-    wg.Add(1)
-    go l.replicateToOneReplica(m, r, &wg)
+    args := &proto.ReplicateArgs{
+      Order: order,
+      Message: m,
+    }
+    go l.replicateToOneReplica(args, r, c)
   }
 
-  wg.Wait()
-  l.logger.Info("Finished replication", zap.String("message", m))
+  ackCount := 0
+  for ackCount < l.minAcks {
+    <- c
+    ackCount++
+    l.logger.Debug("Replica acked", zap.Int("ack count", ackCount), zap.Int("minAck", l.minAcks))
+  }
 
+  l.logger.Info("End replication from leader to all replicas", zap.String("message", m))
   return nil
 }

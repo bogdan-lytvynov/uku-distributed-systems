@@ -1,68 +1,86 @@
 package main
 
 import (
-  "fmt"
+  "os"
+  "strconv"
+  "time"
   "net"
-  "net/http"
   "net/rpc"
-  "encoding/json"
+  "net/http"
+  "github.com/gin-gonic/gin"
   "github.com/bogdan-lytvynov/uku-distributed-systems/module-1/replication-v1/proto"
-
+  "go.uber.org/zap"
 )
-const HTTP_PORT = 3000
-const RPC_PORT = 3001
 
-var logs = []string{}
+type Replica struct{
+  logger *zap.Logger
+  logs []string
+  delay int
+}
 
-func getLogs(w http.ResponseWriter, r *http.Request) {
-  switch r.Method {
-    case "GET":   
-    w.Header().Set("Content-Type", "application/json")
-    m, err := json.Marshal(logs)
-    if err != nil {
-      fmt.Println("Marshal error", err)
-    }
-    w.Write(m)
-
-  default:
-    fmt.Fprintf(w, "Sorry, only GET method is supported.")
+func NewReplica (delay int, logger *zap.Logger) *Replica {
+  return &Replica{
+    logger: logger,
+    delay: delay,
   }
 }
 
-type ReplicaRPC struct{
-}
-
-func (r *ReplicaRPC) Replicate(args *proto.ReplicateArgs, reply *proto.ReplicateReply) error {
-  logs = append(logs, args.Message)
+func (r *Replica) Replicate(args *proto.ReplicateArgs, reply *proto.ReplicateReply) error {
+  if r.delay != 0 {
+    r.logger.Info("Start delay")
+    time.Sleep(time.Duration(r.delay) * time.Second)
+    r.logger.Info("End delay")
+  }
+  r.logger.Info("Add message to replica log",
+    zap.Int("order", args.Order),
+    zap.String("message", args.Message),
+  )
+  r.logs[args.Order] = args.Message
   reply.Ack = true
   return nil
 }
 
-func startHttpServer() {
-  http.HandleFunc("/logs", getLogs)
-
-  fmt.Println("Start http server")
-  err := http.ListenAndServe(fmt.Sprintf(":%d", HTTP_PORT), nil)
-
-  if err != nil {
-    fmt.Println("Error happened on server start", err)
-  }
+func (r *Replica) GetLogs() []string {
+  return r.logs
 }
 
-func startRpcServer() {
+func startRpcServer(r *Replica, logger *zap.Logger) {
   //start RPC server
-  r := new(ReplicaRPC)
   rpc.Register(r)
   rpc.HandleHTTP()
-  l, e := net.Listen("tcp", fmt.Sprintf(":%d", RPC_PORT))
+  logger.Info("Start RPC server")
+  l, e := net.Listen("tcp", ":3001")
   if e != nil {
-    fmt.Println("listen error:", e)
+    logger.Error("Failed to net.Listen", zap.Error(e))
   }
-  fmt.Println("Start rpc server")
   go http.Serve(l, nil)
 }
 
+func startHttpServer(r *Replica) {
+  e := gin.Default()
+
+  e.GET("logs", func (c *gin.Context) {
+    c.JSON(200, r.GetLogs())
+  })
+
+  e.Run()
+}
+
+func parseDelay(delayStr string) int {
+  if delayStr == "" {
+    return 0
+  }
+  d, err := strconv.Atoi(delayStr)
+  if err != nil {
+    return 0
+  }
+  return d
+}
+
 func main() {
-  startRpcServer()
-  startHttpServer()
+  logger, _ := zap.NewDevelopment()
+  logger.Info("Start replica")
+  r := NewReplica(parseDelay(os.Getenv("DELAY")), logger)
+  startRpcServer(r, logger)
+  startHttpServer(r)
 }
