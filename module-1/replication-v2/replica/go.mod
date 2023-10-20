@@ -3,7 +3,6 @@ module github.com/bogdan-lytvynov/uku-distributed-systems/module-1/replication-v
 go 1.21.1
 
 require (
-	github.com/bogdan-lytvynov/uku-distributed-systems/module-1/replication-v1/proto v0.0.0-20231020125651-1a207e65e841
 	github.com/gin-gonic/gin v1.9.1
 	go.uber.org/zap v1.26.0
 )

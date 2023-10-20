@@ -4,12 +4,12 @@ import (
   "sync"
   "net/rpc"
   "go.uber.org/zap"
-  "github.com/bogdan-lytvynov/uku-distributed-systems/module-1/replication-v1/proto"
+  "github.com/bogdan-lytvynov/uku-distributed-systems/module-1/replication-v2/proto"
 )
 
 type Leader struct {
   order int
-  mx sync.Mutext
+  mx sync.Mutex
   logs []string
   logger *zap.Logger
   replicas []string

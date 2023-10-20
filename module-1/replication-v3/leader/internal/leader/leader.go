@@ -6,7 +6,7 @@ import (
   "sync"
   "net/rpc"
   "go.uber.org/zap"
-  "github.com/bogdan-lytvynov/uku-distributed-systems/module-1/replication-v1/proto"
+  "github.com/bogdan-lytvynov/uku-distributed-systems/module-1/replication-v2/proto"
 )
 
 var replicaClientTimeout = errors.New("ReplicaClientTimeout")

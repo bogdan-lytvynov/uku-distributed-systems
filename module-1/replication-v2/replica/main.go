@@ -8,7 +8,7 @@ import (
   "net/rpc"
   "net/http"
   "github.com/gin-gonic/gin"
-  "github.com/bogdan-lytvynov/uku-distributed-systems/module-1/replication-v1/proto"
+  "github.com/bogdan-lytvynov/uku-distributed-systems/module-1/replication-v2/proto"
   "go.uber.org/zap"
 )
 
