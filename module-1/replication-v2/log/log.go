@@ -18,7 +18,7 @@ type Log struct {
   logMX sync.Mutex
 }
 
-func NewLog() {
+func NewLog() Log {
   return Log {
     index: -1,
   }
@@ -58,7 +58,7 @@ func (l *Log) Process(index int, m string) {
   lastExpectedIndex := len(l.log)
   for _, p := range l.pending {
     if p.index == lastExpectedIndex { //expectly the next message in thes index
-      l.logs = append(l.logs, p.message)
+      l.log = append(l.log, p.message)
     } else if p.index <  lastExpectedIndex{ // message duplicate but might have new value
       l.logs[p.index] = p.message 
     } else {
