@@ -1,7 +1,9 @@
 package leader
 import (
+  "time"
   "net/rpc"
   "go.uber.org/zap"
+  "github.com/bogdan-lytvynov/uku-distributed-systems/module-1/replication-v2/proto"
 )
 
 type ReplicaClient struct {

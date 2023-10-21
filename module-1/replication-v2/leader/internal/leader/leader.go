@@ -2,11 +2,8 @@ package leader
 
 import (
   "time"
-  "sync"
-  "net/rpc"
   "go.uber.org/zap"
   "github.com/bogdan-lytvynov/uku-distributed-systems/module-1/replication-v2/log"
-  "github.com/bogdan-lytvynov/uku-distributed-systems/module-1/replication-v2/proto"
 )
 var defaultReplicaClientTimeout time.Duration = 5
 
