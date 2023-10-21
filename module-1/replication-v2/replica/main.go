@@ -8,41 +8,46 @@ import (
   "net/rpc"
   "net/http"
   "github.com/gin-gonic/gin"
+  "github.com/bogdan-lytvynov/uku-distributed-systems/module-1/replication-v2/log"
   "github.com/bogdan-lytvynov/uku-distributed-systems/module-1/replication-v2/proto"
   "go.uber.org/zap"
 )
 
 type Replica struct{
+  log log.Log
   logger *zap.Logger
-  logs []string
   delay int
 }
 
 func NewReplica (delay int, logger *zap.Logger) *Replica {
   return &Replica{
+    log: log.NewLog(),
     logger: logger,
     delay: delay,
-    logs: make([]string, 100),
   }
 }
 
-func (r *Replica) Replicate(args *proto.ReplicateArgs, reply *proto.ReplicateReply) error {
+func (r *Replica) maybeDelay() {
   if r.delay != 0 {
     r.logger.Info("Start delay")
     time.Sleep(time.Duration(r.delay) * time.Second)
     r.logger.Info("End delay")
   }
+}
+
+func (r *Replica) Replicate(m *proto.ReplicateMessage, reply *proto.ReplicateMessageReply) error {
+  r.maybeDelay()
   r.logger.Info("Add message to replica log",
-    zap.Int("order", args.Order),
-    zap.String("message", args.Message),
+    zap.Int("index", m.Index),
+    zap.String("message", m.Message),
   )
-  r.logs[args.Order] = args.Message
+  log.process(m.Index, m.Message)
   reply.Ack = true
   return nil
 }
 
-func (r *Replica) GetLogs() []string {
-  return r.logs
+func (r *Replica) GetLog() []string {
+  return r.log.GetLog()
 }
 
 func startRpcServer(r *Replica, logger *zap.Logger) {
@@ -60,8 +65,8 @@ func startRpcServer(r *Replica, logger *zap.Logger) {
 func startHttpServer(r *Replica) {
   e := gin.Default()
 
-  e.GET("logs", func (c *gin.Context) {
-    c.JSON(200, r.GetLogs())
+  e.GET("log", func (c *gin.Context) {
+    c.JSON(200, r.GetLog())
   })
 
   e.Run()
