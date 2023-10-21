@@ -4,6 +4,8 @@ github.com/bogdan-lytvynov/uku-distributed-systems/module-1/replication-v2/log v
 github.com/bogdan-lytvynov/uku-distributed-systems/module-1/replication-v2/log v0.0.0-20231021130932-53f60680d7de/go.mod h1:k6eXa0Hc+hT8BJVFxUmIsWjXsUdH+409rfFcuDVF1Lk=
 github.com/bogdan-lytvynov/uku-distributed-systems/module-1/replication-v2/log v0.0.0-20231021131217-106a65c4bd93 h1:uWUJqrpal7UeMJTy4pvlW8E2eFyUpq5K9IR7EyX7zlM=
 github.com/bogdan-lytvynov/uku-distributed-systems/module-1/replication-v2/log v0.0.0-20231021131217-106a65c4bd93/go.mod h1:k6eXa0Hc+hT8BJVFxUmIsWjXsUdH+409rfFcuDVF1Lk=
+github.com/bogdan-lytvynov/uku-distributed-systems/module-1/replication-v2/log v0.0.0-20231021184102-8299a480364e h1:nUDZDknpolBUkTFI2xFlJidqK8MI/6ijKXw/kt8qdKA=
+github.com/bogdan-lytvynov/uku-distributed-systems/module-1/replication-v2/log v0.0.0-20231021184102-8299a480364e/go.mod h1:0YjgGDpwGN6jGHwcb9l+k6snfkrcnOPoomSsBDzwxE8=
 github.com/bogdan-lytvynov/uku-distributed-systems/module-1/replication-v2/proto v0.0.0-20231020152951-7f007dd0970b h1:amlFA3wPuELv33GLUV7GYA4JPBjaYKY3Qm9JTAruyQo=
 github.com/bogdan-lytvynov/uku-distributed-systems/module-1/replication-v2/proto v0.0.0-20231020152951-7f007dd0970b/go.mod h1:aRYeLr85ROu4zv3nR5zbpX4nsnmR3OKYZEKj4iqhfBc=
 github.com/bogdan-lytvynov/uku-distributed-systems/module-1/replication-v2/proto v0.0.0-20231021113720-542278f570e5 h1:VOZfsb4C1DybXzkBDnQR3rc5OLhBLV68asrBJzXOtsk=

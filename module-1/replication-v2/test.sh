@@ -1,6 +1,6 @@
-curl -H "Content-Type: application/json" -XPOST -d '{"message":"first"}' localhost:8080/message
-curl -H "Content-Type: application/json" -XPOST -d '{"message":"second"}' localhost:8080/message
-curl -H "Content-Type: application/json" -XPOST -d '{"message":"third"}' localhost:8080/message
+curl -H "Content-Type: application/json" -XPOST -d '{"message":"first", "w":1}' localhost:8080/message
+curl -H "Content-Type: application/json" -XPOST -d '{"message":"second", "w":2}' localhost:8080/message
+curl -H "Content-Type: application/json" -XPOST -d '{"message":"third", "w":3}' localhost:8080/message
 
 echo "Check replica 1\n"
 curl localhost:3000/log
