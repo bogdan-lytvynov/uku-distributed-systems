@@ -5,6 +5,3 @@ use ./replica
 use ./leader
 
 use ./proto
-replace github.com/bogdan-lytvynov/uku-distributed-systems/module-1/replication-v1/proto v0.1.0 => ./proto
-replace github.com/bogdan-lytvynov/uku-distributed-systems/module-1/replication-v2/proto => ./proto
-replace github.com/bogdan-lytvynov/uku-distributed-systems/module-1/replication-v2/log => ./log

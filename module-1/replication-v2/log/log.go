@@ -24,7 +24,7 @@ func NewLog() Log {
   }
 }
 
-func (l *Log) nextIndex() int {
+func (l *Log) NextIndex() int {
   l.indexMX.Lock()
   defer l.indexMX.Unlock()
   l.index++

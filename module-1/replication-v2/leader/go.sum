@@ -1,11 +1,5 @@
-github.com/bogdan-lytvynov/uku-distributed-systems/module-1/replication-v2/log v0.0.0-20231021125500-a948a48ec77a h1:e3HOC67UmtipDWvcgZEP/o3GhyLm/CBcA6+7VpbYHvw=
-github.com/bogdan-lytvynov/uku-distributed-systems/module-1/replication-v2/log v0.0.0-20231021125500-a948a48ec77a/go.mod h1:k6eXa0Hc+hT8BJVFxUmIsWjXsUdH+409rfFcuDVF1Lk=
-github.com/bogdan-lytvynov/uku-distributed-systems/module-1/replication-v2/log v0.0.0-20231021130932-53f60680d7de h1:bKgqELkJ4fg/vScKo0qwLuyNQxiSJTmhNvSmNgeggBU=
-github.com/bogdan-lytvynov/uku-distributed-systems/module-1/replication-v2/log v0.0.0-20231021130932-53f60680d7de/go.mod h1:k6eXa0Hc+hT8BJVFxUmIsWjXsUdH+409rfFcuDVF1Lk=
-github.com/bogdan-lytvynov/uku-distributed-systems/module-1/replication-v2/log v0.0.0-20231021131217-106a65c4bd93 h1:uWUJqrpal7UeMJTy4pvlW8E2eFyUpq5K9IR7EyX7zlM=
-github.com/bogdan-lytvynov/uku-distributed-systems/module-1/replication-v2/log v0.0.0-20231021131217-106a65c4bd93/go.mod h1:k6eXa0Hc+hT8BJVFxUmIsWjXsUdH+409rfFcuDVF1Lk=
-github.com/bogdan-lytvynov/uku-distributed-systems/module-1/replication-v2/proto v0.0.0-20231021113720-542278f570e5 h1:VOZfsb4C1DybXzkBDnQR3rc5OLhBLV68asrBJzXOtsk=
-github.com/bogdan-lytvynov/uku-distributed-systems/module-1/replication-v2/proto v0.0.0-20231021113720-542278f570e5/go.mod h1:aRYeLr85ROu4zv3nR5zbpX4nsnmR3OKYZEKj4iqhfBc=
+github.com/bogdan-lytvynov/uku-distributed-systems/module-1/replication-v2/log v0.0.0-20231021171430-b6f0fb41103a h1:jm18JAQREEO89CSYD+HcYBz24nhglS3DHSRtpZY31xQ=
+github.com/bogdan-lytvynov/uku-distributed-systems/module-1/replication-v2/log v0.0.0-20231021171430-b6f0fb41103a/go.mod h1:k6eXa0Hc+hT8BJVFxUmIsWjXsUdH+409rfFcuDVF1Lk=
 github.com/bogdan-lytvynov/uku-distributed-systems/module-1/replication-v2/proto v0.0.0-20231021130932-53f60680d7de h1:WCSaMIzlRh9YQ1lNC09zkDEmaWiiuC0YP/jejVeg3nw=
 github.com/bogdan-lytvynov/uku-distributed-systems/module-1/replication-v2/proto v0.0.0-20231021130932-53f60680d7de/go.mod h1:aRYeLr85ROu4zv3nR5zbpX4nsnmR3OKYZEKj4iqhfBc=
 github.com/bytedance/sonic v1.5.0/go.mod h1:ED5hyg4y6t3/9Ku1R6dU/4KyJ48DZ4jPhfY1O2AihPM=
