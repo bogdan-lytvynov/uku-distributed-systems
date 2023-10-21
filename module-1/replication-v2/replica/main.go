@@ -22,6 +22,7 @@ func NewReplica (delay int, logger *zap.Logger) *Replica {
   return &Replica{
     logger: logger,
     delay: delay,
+    logs: make([]string, 100),
   }
 }
 

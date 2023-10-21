@@ -6,12 +6,13 @@ import (
   "strconv"
 
   "github.com/gin-gonic/gin"
-  "github.com/bogdan-lytvynov/uku-distributed-systems/module-1/replication-v1/leader/internal/leader"
+  "github.com/bogdan-lytvynov/uku-distributed-systems/module-1/replication-v2/leader/internal/leader"
   "go.uber.org/zap"
 )
 
 type MessageRequest struct {
   Message string
+  W int
 }
 
 func main() {
@@ -23,9 +24,10 @@ func main() {
     logger.Fatal("Can't convert value of env var W into int")
     return
   }
+  replicas := strings.Split(os.Getenv("REPLICAS"), ","),
+
   l := leader.NewLeader(
-    strings.Split(os.Getenv("REPLICAS"), ","),
-    w - 1, // w is min amount of nodes ACKing message including master
+    replicas,
     logger,
   )
 
@@ -36,7 +38,8 @@ func main() {
   r.POST("message", func (c *gin.Context) {
     m := MessageRequest{}
     c.Bind(&m)
-    l.AddMessage(m.Message)
+
+    l.AddMessage(m.Message, m.W)
     c.Status(200)
   })
 

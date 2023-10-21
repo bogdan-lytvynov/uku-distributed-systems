@@ -1,8 +1,9 @@
-module github.com/bogdan-lytvynov/uku-distributed-systems/module-1/replication-v1/replica
+module github.com/bogdan-lytvynov/uku-distributed-systems/module-1/replication-v2/replica
 
 go 1.21.1
 
 require (
+	github.com/bogdan-lytvynov/uku-distributed-systems/module-1/replication-v2/proto v0.0.0-20231020152951-7f007dd0970b
 	github.com/gin-gonic/gin v1.9.1
 	go.uber.org/zap v1.26.0
 )

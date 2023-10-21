@@ -1,10 +1,10 @@
 package proto
 
-type ReplicateArgs struct {
+type ReplicateMessage struct {
   Order int
   Message string
 }
 
-type ReplicateReply struct {
+type ReplicateMessageReply struct {
   Ack bool
 }
