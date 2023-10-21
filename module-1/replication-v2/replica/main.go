@@ -41,7 +41,7 @@ func (r *Replica) Replicate(m *proto.ReplicateMessage, reply *proto.ReplicateMes
     zap.Int("index", m.Index),
     zap.String("message", m.Message),
   )
-  log.process(m.Index, m.Message)
+  r.log.Process(m.Index, m.Message)
   reply.Ack = true
   return nil
 }

@@ -37,7 +37,7 @@ func (l *Leader) AddMessage(m string, w int) error {
   index := l.log.nextIndex()
 
   l.replicate(index, m, w)
-  l.processReplicatedMessage(index, m)
+  l.log.Process(index, m)
 
   return nil
 }

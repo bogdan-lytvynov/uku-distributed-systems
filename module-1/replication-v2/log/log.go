@@ -31,7 +31,11 @@ func (l *Log) nextIndex() int {
   return l.index
 }
 
-func (l *Log) process(index int, m string) {
+func (l *Log) GetLog() []string {
+  return l.log
+}
+
+func (l *Log) Process(index int, m string) {
   l.logMX.Lock()
   defer l.logMX.Unlock()
 
