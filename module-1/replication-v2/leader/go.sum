@@ -1,5 +1,7 @@
 github.com/bogdan-lytvynov/uku-distributed-systems/module-1/replication-v2/log v0.0.0-20231021171430-b6f0fb41103a h1:jm18JAQREEO89CSYD+HcYBz24nhglS3DHSRtpZY31xQ=
 github.com/bogdan-lytvynov/uku-distributed-systems/module-1/replication-v2/log v0.0.0-20231021171430-b6f0fb41103a/go.mod h1:k6eXa0Hc+hT8BJVFxUmIsWjXsUdH+409rfFcuDVF1Lk=
+github.com/bogdan-lytvynov/uku-distributed-systems/module-1/replication-v2/log v0.0.0-20231021172231-213c915c8975 h1:hpERmVBo3rT9bVkWDPB9cyLMJ2iYCUG86rigW8DOB6Q=
+github.com/bogdan-lytvynov/uku-distributed-systems/module-1/replication-v2/log v0.0.0-20231021172231-213c915c8975/go.mod h1:k6eXa0Hc+hT8BJVFxUmIsWjXsUdH+409rfFcuDVF1Lk=
 github.com/bogdan-lytvynov/uku-distributed-systems/module-1/replication-v2/proto v0.0.0-20231021130932-53f60680d7de h1:WCSaMIzlRh9YQ1lNC09zkDEmaWiiuC0YP/jejVeg3nw=
 github.com/bogdan-lytvynov/uku-distributed-systems/module-1/replication-v2/proto v0.0.0-20231021130932-53f60680d7de/go.mod h1:aRYeLr85ROu4zv3nR5zbpX4nsnmR3OKYZEKj4iqhfBc=
 github.com/bytedance/sonic v1.5.0/go.mod h1:ED5hyg4y6t3/9Ku1R6dU/4KyJ48DZ4jPhfY1O2AihPM=

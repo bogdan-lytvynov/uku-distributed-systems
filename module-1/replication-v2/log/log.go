@@ -31,8 +31,25 @@ func (l *Log) NextIndex() int {
   return l.index
 }
 
-func (l *Log) GetLog() []string {
+func (l *Log) GetAll() []string {
   return l.log
+}
+
+func (l *Log) shiftInsert(pm pendingMessage) {
+  i := 0
+  // look for a place where to insert new pending message
+  for i < len(l.pending) && l.pending[i].index < pm.index {
+    i++
+  }
+
+
+  before := l.pending[0:i]
+  after := l.pending[i:len(l.pending)]
+  
+  newPending := append([]pendingMessage{}, before...)
+  newPending = append(newPending, pm)
+  l.pending = append(newPending, after...)
+
 }
 
 func (l *Log) Process(index int, m string) {
@@ -43,25 +60,18 @@ func (l *Log) Process(index int, m string) {
     index,
     m,
   }
-
-  // append pending message using shift sort
-  for i, p := range l.pending {
-    if index < p.index {
-      before := l.pending[0:i]
-      after := l.pending[i:len(l.pending)]
-      l.pending = append(append(before, pendingMessage), after...)
-      break
-    }
-  }
+  l.shiftInsert(pendingMessage)
 
   // add pending messages to the log if they come in expected index
   lastExpectedIndex := len(l.log)
   for _, p := range l.pending {
     if p.index == lastExpectedIndex { //expectly the next message in thes index
       l.log = append(l.log, p.message)
+      lastExpectedIndex++
     } else if p.index <  lastExpectedIndex{ // message duplicate but might have new value
       l.log[p.index] = p.message 
-    } else {
+    } else { // remove merged messages
+      //copy(l.pending, l.pending[i:]) // remove all the merged elements
       break
     }
   }

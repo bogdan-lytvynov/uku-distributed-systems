@@ -47,7 +47,7 @@ func (r *Replica) Replicate(m *proto.ReplicateMessage, reply *proto.ReplicateMes
 }
 
 func (r *Replica) GetLog() []string {
-  return r.log.GetLog()
+  return r.log.GetAll()
 }
 
 func startRpcServer(r *Replica, logger *zap.Logger) {

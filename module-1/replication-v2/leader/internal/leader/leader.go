@@ -27,11 +27,11 @@ func NewLeader(replicas []string, logger *zap.Logger) Leader {
 }
 
 func (l *Leader) GetLog() []string {
-  return l.log.GetLog()
+  return l.log.GetAll()
 }
 
 func (l *Leader) AddMessage(m string, w int) error {
-  index := l.log.nextIndex()
+  index := l.log.NextIndex()
 
   l.replicate(index, m, w)
   l.log.Process(index, m)
