@@ -3,13 +3,13 @@ module github.com/bogdan-lytvynov/uku-distributed-systems/module-1/replication-v
 go 1.21.1
 
 require (
-	github.com/bogdan-lytvynov/uku-distributed-systems/module-1/replication-v2/proto v0.0.0-20231021113720-542278f570e5
 	github.com/gin-gonic/gin v1.9.1
 	go.uber.org/zap v1.26.0
 )
 
 require (
-	github.com/bogdan-lytvynov/uku-distributed-systems/module-1/replication-v2/log v0.0.0-20231021125500-a948a48ec77a // indirect
+	github.com/bogdan-lytvynov/uku-distributed-systems/module-1/replication-v2/log v0.0.0-20231021130932-53f60680d7de // indirect
+	github.com/bogdan-lytvynov/uku-distributed-systems/module-1/replication-v2/proto v0.0.0-20231021130932-53f60680d7de // indirect
 	github.com/bytedance/sonic v1.10.2 // indirect
 	github.com/chenzhuoyu/base64x v0.0.0-20230717121745-296ad89f973d // indirect
 	github.com/chenzhuoyu/iasm v0.9.0 // indirect

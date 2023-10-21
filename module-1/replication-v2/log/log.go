@@ -60,7 +60,7 @@ func (l *Log) Process(index int, m string) {
     if p.index == lastExpectedIndex { //expectly the next message in thes index
       l.log = append(l.log, p.message)
     } else if p.index <  lastExpectedIndex{ // message duplicate but might have new value
-      l.logs[p.index] = p.message 
+      l.log[p.index] = p.message 
     } else {
       break
     }
