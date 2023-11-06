@@ -2,25 +2,31 @@ package main
 
 import (
   "os"
+  "math/rand"
+  "errors"
   "strconv"
   "time"
   "net"
   "net/rpc"
   "net/http"
   "github.com/gin-gonic/gin"
-  "github.com/bogdan-lytvynov/uku-distributed-systems/module-1/replication-v3/proto"
+  "github.com/bogdan-lytvynov/uku-distributed-systems/module-1/replication-v2/log"
+  "github.com/bogdan-lytvynov/uku-distributed-systems/module-1/replication-v2/proto"
   "go.uber.org/zap"
 )
 
+var errSynaticFailure = errors.New("sytatic error to test leader fail-over mechanism")
+
 type Replica struct{
+  log log.Log
   logger *zap.Logger
-  logs []string
-  pendingMessages []*proto.ReplicateMessage
   delay int
+  failurePercent int
 }
 
-func NewReplica (delay int, logger *zap.Logger) *Replica {
+func NewReplica (delay int, failurePercent int, logger *zap.Logger) *Replica {
   return &Replica{
+    log: log.NewLog(),
     logger: logger,
     delay: delay,
   }
@@ -34,37 +40,33 @@ func (r *Replica) maybeDelay() {
   }
 }
 
-//insert sort into pending messages queue
-func (r *Replica) addPendingMessage(m *proto.ReplicateMessage) {
+func (r *Replica) maybeFail() error {
+  if rand.Intn(100) < r.failurePercent {
+    r.logger.Error("generate syntatic error")
+    return errSynaticFailure 
+  }
 
-}
-
-// check if there are pending messages we can process
-func (r *Replica) reviewPendingMessages() {
-
+  return nil
 }
 
 func (r *Replica) Replicate(m *proto.ReplicateMessage, reply *proto.ReplicateMessageReply) error {
   r.maybeDelay()
-
-  r.logger.Info("Add message to replica log",
-    zap.Int("order", m.Order),
-    zap.String("message", m.Message),
-  )
-  //if we received next message in order - add it to the logs
-  if  m.Order == len(r.logs) {
-    r.logs = append(r.logs, m.Message)
-    r.reviewPendingMessages()
-  } else if m.Order > len(r.logs) {
-    r.addPendingMessage(m)
+  err := r.maybeFail()
+  if err != nil {
+    return err
   }
 
+  r.logger.Info("Add message to replica log",
+    zap.Int("index", m.Index),
+    zap.String("message", m.Message),
+  )
+  r.log.Process(m.Index, m.Message)
   reply.Ack = true
   return nil
 }
 
-func (r *Replica) GetLogs() []string {
-  return r.logs
+func (r *Replica) GetLog() []string {
+  return r.log.GetAll()
 }
 
 func startRpcServer(r *Replica, logger *zap.Logger) {
@@ -82,14 +84,15 @@ func startRpcServer(r *Replica, logger *zap.Logger) {
 func startHttpServer(r *Replica) {
   e := gin.Default()
 
-  e.GET("logs", func (c *gin.Context) {
-    c.JSON(200, r.GetLogs())
+  e.GET("log", func (c *gin.Context) {
+    c.JSON(200, r.GetLog())
   })
 
   e.Run()
 }
 
-func parseDelay(delayStr string) int {
+func parseDelay() int {
+  delayStr := os.Getenv("DELAY")
   if delayStr == "" {
     return 0
   }
@@ -100,10 +103,24 @@ func parseDelay(delayStr string) int {
   return d
 }
 
+func parseFailurePercent() int {
+  failurePercentStr := os.Getenv("FAILURE_PERCENT")
+  if failurePercentStr == "" {
+    return 0
+  }
+  p, err := strconv.Atoi(failurePercentStr)
+  if err != nil {
+    return 0
+  }
+  return p
+}
+
 func main() {
   logger, _ := zap.NewDevelopment()
   logger.Info("Start replica")
-  r := NewReplica(parseDelay(os.Getenv("DELAY")), logger)
+  delay := parseDelay()
+  failurePercent := parseFailurePercent()
+  r := NewReplica(delay, failurePercent, logger)
   startRpcServer(r, logger)
   startHttpServer(r)
 }

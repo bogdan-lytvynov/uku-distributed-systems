@@ -1,7 +1,7 @@
 package proto
 
 type ReplicateMessage struct {
-  Order int
+  Index int
   Message string
 }
 
